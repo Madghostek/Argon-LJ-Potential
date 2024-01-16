@@ -2,21 +2,112 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Model argonu 2D</title>
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<script src="particle.js"></script>
-	<script src="argon.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+
 </head>
 <body>
+	<style type="text/css">
+		html{
+			font-size: 100% !important; /*??? glyphicons messing with this*/
+		}
+		body {
+			margin: 0px;
+			padding: 0px;
+			width: 100%;
+			height: 100%;
+			font-family: 'Ubuntu', sans-serif !important;
 
-<style type="text/css">
-	body {
-		margin: 0px;
-		padding: 0px;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+
+		}
+		canvas {
+			display: block;
+			border: 8px solid #ff6550;
+		}
+		#container {
+			width:75%;
+		}
+	</style>
+	<div class="modal fade" id="myModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h4 class="modal-title">Symulacja potencjału Lennard Jonesa w 2D</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      	<p> Dostępne są dwie metody rozpoczynania symulacji:
+      		<ul>
+      			<li>Losowa - suwak z temperaturą decyduje o początkowym rozkładzie prędkości.</li>
+      			<li>Siatka - Pole "ilość" mówi o rozmiarze siatki NxN, wszystkie cząstki rozpoczynają bez ruchu.</li>
+      		</ul>
+        <p> Pomocne uwagi:</p>
+        <p> - Symulacja dużej ilości cząstek bez termostatu jest niestabilna </p>
+        <p> - Zrestartowanie symulacji z włączonym termostatem może powodować dziwne efekty </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+      </div>
+    </div>
+  </div>
+</div>
+	<div id='content' class='d-flex'>
+		<div id='container'></div>
+		<div id='opcje_i_wykres' class="d-flex flex-column flex-grow-1">
+		<div id='opcje' class="m-3 d-flex flex-column">
+			<div class="input-group justify-content-between mb-2">
+			<h2>Opcje</h2>
+			<button data-toggle="modal" data-target="#myModal" class="btn btn-primary">
+    			<i class="glyphicon glyphicon-question-sign"></i>
+			</button>
+			</div>
+			<div class="form-group">
+				<div class='input-group'>
+					<select id="init_config" class="form-control" aria-label="Starting configuration">
+					  	<option value="rand">Losowo</option>
+					  	<option value="grid">Siatka</option>
+					</select>
+
+					<div class="input-group-btn">
+						<button class="btn btn-primary" onclick="restart()">Restart</button>
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="count">Ilość</label>
+				<input class="form-control" id="count" placeholder="Wpisz liczbę"></input>
+			</div>
+			<div class="form-group">
+				<label for="temperatura">Temperatura</label>
+				<input id="temperatura" type="range" min="0" max="200" class="form-range form-control" oninput="this.nextElementSibling.value = this.value+'K'">
+				<output>0K</output>
+			</div>
+			<div class="form-check">
+				  <input class="form-check-input" type="checkbox" value="" id="termostat">
+				  <label class="form-check-label" for="termostat">Aktywny termostat</label>
+			</div>
+			</div>
+		<div class="">
+			<figure class="highcharts-figure">
+				<div id='chart'></div>
+			</figure>
+		</div>
+		</div>
+	</div>
+	
+
+	<script src="options.js"></script>
+	<script src="particle.js"></script>
+	<script src="argon.js"></script>
+	<script src="temperature_plot.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
