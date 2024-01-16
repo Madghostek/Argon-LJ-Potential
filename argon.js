@@ -32,8 +32,9 @@ let update_counter = 0;
 function update(dt){
   update_counter+=1
   // temperature
-  if (chart && !update_counter%10)
+  if (chart && !(update_counter%10))
   {
+    console.log("update")
     let speeds = particles.map(d => d.vel.mag())
     let data = createHistogram(speeds,10,0,300)
     chart.series[0].setData(data)
@@ -112,6 +113,7 @@ function initGrid(countx, county, offsetX, offsetY){
   for (let i=0; i<countx;i++){
     for (let j=0; j<county;j++){
       var p = new Particle(0)
+      if (offsetY+p.r+p.r*3*j>height || offsetX+p.r+i*p.r*3>width) continue
       p.pos = createVector(offsetX+p.r+i*p.r*3, offsetY+p.r+p.r*3*j)
       particles.push(p)
     }
