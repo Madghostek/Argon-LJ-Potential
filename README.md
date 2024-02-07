@@ -7,3 +7,5 @@ Visit [live version](https://madghostek.github.io/Argon-LJ-Potential/model_argon
 Prosta symulacja interakcji między cząstkami. Jest też termostat
 
 Odwiedź [wersję na żywo](https://madghostek.github.io/Argon-LJ-Potential/model_argonu.html), lub sklonuj repo i uruchom `model_argonu.html` w przeglądarce (wymagane połączenie internetowe)
+
+![screenshot](screenshot.png)
